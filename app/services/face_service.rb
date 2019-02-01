@@ -4,13 +4,19 @@ module FaceService
   # https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/Rekognition/Client.html#index_faces-instance_method
   def upload(file_id)
     response = client.index_faces(upload_params(file_id))
-    format_upload_response(response)
+    format_upload_response(response).tap { |data|
+      Rails.logger.debug "[data] rekognition index_faces response data"
+      Rails.logger.debug data.inspect
+    }
   end
 
   # https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/Rekognition/Client.html#search_faces_by_image-instance_method
   def search(file_id)
     response = client.search_faces_by_image(search_params(file_id))
-    format_search_response(response)
+    format_search_response(response).tap { |data|
+      Rails.logger.debug "[data] rekognition index_faces response data"
+      Rails.logger.debug data.inspect
+    }
   end
 
   def destroy_all
