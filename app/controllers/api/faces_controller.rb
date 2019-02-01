@@ -1,5 +1,6 @@
 module Api
   class FacesController < ApplicationController
+    skip_before_action :verify_authenticity_token
     before_action :authenticate_request
 
     # POST /api/faces { face: { file_id: face_id/file_id } }
