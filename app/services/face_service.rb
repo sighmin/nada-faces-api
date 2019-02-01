@@ -19,10 +19,20 @@ module FaceService
     }
   end
 
-  def destroy_all
+  def flush
     params = { collection_id: collection_id }
     client.delete_collection(params) &&
       client.create_collection(params)
+
+    s3_client.list_objects({
+      bucket: bucket,
+      max_keys: 1000,
+    }).contents.each { |object|
+      s3_client.delete_object({
+        bucket: bucket,
+        key: object.key,
+      })
+    }
   end
 
   private
@@ -87,6 +97,10 @@ module FaceService
 
   def client
     Aws::Rekognition::Client.new(region: ENV.fetch("AWS_REGION"))
+  end
+
+  def s3_client
+    Aws::S3::Client.new(region: ENV.fetch("AWS_REGION"))
   end
 
   def collection_id
